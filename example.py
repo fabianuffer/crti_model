@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def generate_example(omega):
     Gamma = np.array([[0, 1, 0.5], [0, 0, 0.5], [0, 0, 0]])
     A = np.array([100, 70, 20])
@@ -37,18 +38,29 @@ def insolvency_equation(P, A, Ls, Rs, Sigma_s):
         S.append(np.dot(Temp, np.ones(n) - sigma))
     return np.linalg.solve(np.identity(n) - P, A + sum(S))
 
+
 def is_admissible(G, Sigma_s):
-    g_bigger_zero = [g>0 for g in G]
-    if any(g_bigger_zero):
+    g_bigger_zero = [g > 0 for g in G]
+    if all(g_bigger_zero):
         return True
-    
+    # Check for other possible admissible solution
+    return False
+
 
 def find_admissible_solution(P, A, Ls, Rs):
     S = len(Ls)
     n = Rs[0].shape[0]
+
+    #TODO: Implement the iteration
     Sigma_s = [np.zeros(n) for _ in range(S)]
     G = insolvency_equation(P, A, Ls, Rs, Sigma_s)
     print is_admissible(G, Sigma_s)
+    print G
+
+
+def plot_balance_sheets(participation, asset, ext_liabilites, int_transactions):
+    """ Implement picture of page 10 in presentation"""
+    pass
 
 if __name__ == "__main__":
     if False:
@@ -67,6 +79,6 @@ if __name__ == "__main__":
         plt.plot(omegas, Gs)
         plt.legend(('Company 1', 'Company 2', 'Company 3'))
         plt.show()
-    
-    participation, asset, ext_liabilites, int_transactions = generate_example(1)
+
+    participation, asset, ext_liabilites, int_transactions = generate_example(3.5)
     find_admissible_solution(participation, asset, ext_liabilites, int_transactions)
